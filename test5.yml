@@ -1,0 +1,28 @@
+- name: A demo playbook
+  hosts: big-ip
+  connection: local
+
+  environment:
+    F5_SERVER: 10.1.0.246
+    F5_USER: root
+    F5_PASSWORD: bebasmas6868
+    F5_SERVER_PORT: 443
+    F5_VALIDATE_CERTS: no
+
+  tasks:
+  - name: Create an LTM policy
+    bigip_policy:
+      name: my-policy1
+
+  - name: Create ASM policy, compact XML file
+    bigip_asm_policy:
+      name: my-asm-policy
+      file: files/actors.xml
+
+  - name: Replace a forward action with an ASM action - Idempotent check
+    bigip_policy_rule:
+      policy: my-policy1
+      name: rule1
+      actions:
+       - type: enable
+         asm_policy: my-asm-policy

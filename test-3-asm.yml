@@ -1,0 +1,11 @@
+- name: Add a rule to the new policy
+  tasks:
+    - bigip_policy_rule:
+      policy: vip-1
+      name: vip-1
+      asm_policy: asm-policy
+      provider:
+        server: 10.1.0.246
+        user: root
+        password: bebasmas6868
+      delegate_to: localhost

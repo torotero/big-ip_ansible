@@ -1,0 +1,12 @@
+- name: Add the iRule contained in template irule.tcl to the LTM module
+  tasks:
+    bigip_irule:
+      src: test-irules.tcl
+      module: ltm
+      name: vip-1
+      state: present
+      provider:
+        user: root
+        password: bebasmas6868
+        server: 10.1.0.246
+    deletage_to: localhost

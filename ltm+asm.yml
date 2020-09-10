@@ -47,5 +47,51 @@
         snat: Automap
         profiles:
           - http
-          - clientssl
+          - websecurity
+      delegate_to: localhost
+
+  
+#buat bikin asm
+    - name: Create asm-1 ASM policy and activate
+      bigip_asm_policy:
+        name: asm-1
+        active: yes
+        state: present
+        provider: "{{ provider }}"
+      delegate_to: localhost
+
+    - name: Create policies
+      bigip_policy:
+        name: vip-1
+        state: present
+        provider: "{{ provider }}"     
+      delegate_to: localhost
+
+#buat create local policies draft
+    - name: create policy
+      bigip_policy_rule:
+        policy: vip-1
+        name: manual
+        actions:
+          - type: enable 
+            asm_policy: asm-1
+        conditions:
+          - type: all_traffic
+        provider: "{{ provider }}" 
+      delegate_to: localhost
+
+    - name: Apply vip setelah draft di save
+      bigip_virtual_server:
+        provider: "{{ provider }}"
+        description: foo-vip
+        destination: 10.1.1.246
+        name: vip-1
+        pool: web
+        port: 80
+        snat: Automap
+        profiles:
+          - http
+          - websecurity
+        policies:
+          - vip-1
       delegate_to: localhost
